@@ -30,12 +30,18 @@ class UserSeeder extends Seeder
 
     public function run()
     {
-        $numUsers = 20;
+        $numUsers = 10;
         $numAdmins = 3;
         $userRoleId = 3;
         $categoryIds = Category::pluck('id')->toArray();
         $tagsIds = Tag::pluck('id')->toArray();
         $maxNumTags = 6;
+
+        User::factory($numAdmins)
+                ->create()
+                ->each(function($admin) {
+                    $admin->roles()->attach(2);
+                });
 
         $users = User::factory($numUsers)->create();
         $userIds = User::pluck('id')->toArray(); //TODO: filter only users
