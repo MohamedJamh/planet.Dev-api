@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\CommentCollection;
 
@@ -30,14 +31,14 @@ class CommentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCommentRequest $request): \Illuminate\Http\JsonResponse
+    public function store(StoreCommentRequest $request)
     {
         //
-        $comment = Comment::create($request->all())->only('id','user_id','article_id');
+        $comment = Comment::create($request->all())->only('id','user_id','article_id','content');
         return response()->json([
             "status" => true,
             "message" => "Comment submited succefully",
-            "comment" => new CommentResource($comment)
+            "data" => $comment
         ],201);
     }
 
@@ -47,8 +48,15 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Comment $comment): \Illuminate\Http\JsonResponse
+    public function show($comment): \Illuminate\Http\JsonResponse
     {
+        $comment = Comment::findOrFail($comment);
+        if(!$comment){
+            return response()->json([
+                "status" => "failed",
+                "message" => "Comment not found"
+            ],404);
+        }
         return response()->json(new CommentResource($comment),200);
     }
 
@@ -59,7 +67,7 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCommentRequest $request, $id)
     {
         //
     }
@@ -70,8 +78,13 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Comment $comment)
     {
         //
+        $comment->delete();
+        return response()->json([
+            "status" => true,
+            "message" => "Comment deleted succefully"
+        ],200);
     }
 }
