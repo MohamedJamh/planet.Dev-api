@@ -21,9 +21,9 @@ return new class extends Migration
         });
 
         DB::table('roles')->insert([
-            ['name' => 'superadmin'],
-            ['name' => 'admin'],
-            ['name' => 'user'],
+            ['name' => 'superadmin', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'admin', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'user', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 

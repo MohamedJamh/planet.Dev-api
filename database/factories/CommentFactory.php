@@ -16,9 +16,11 @@ class CommentFactory extends Factory
      */
     public function definition()
     {
-        $numWords = rand(5, 100);
+        // $numWords = rand(5, 100);
         return [
-            'content' => fake()->sentence($numWords),
+            'content' => fake()->realTextBetween(50, 300),
+            // 'content' => fake()->sentenc($numWords),
+
         ];
     }
 }

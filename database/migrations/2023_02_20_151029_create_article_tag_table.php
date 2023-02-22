@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('article_tag', function (Blueprint $table) {
             $table->foreignId('article_id')->constrained();
             $table->foreignId('tag_id')->constrained();
+            $table->primary(['article_id', 'tag_id']);
             $table->timestamps();
         });
     }

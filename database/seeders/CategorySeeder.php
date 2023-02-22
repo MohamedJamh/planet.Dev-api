@@ -15,9 +15,10 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categoryNames = ["Algorithm", "Database", "UI/UX Design", "DevOps", "Blockchain", "Game development", "Virtual Reality", "Augmented Reality", "5G technology", "Quantum computing", "Programming languages", "Web development", "Cloud computing", "Artificial intelligence", "Cybersecurity", "Data privacy", "Software development", "Mobile apps", "Internet of Things"];
+        $categories = ['Programming Languages', 'Web Development', 'Mobile Development', 'DevOps', 'Cloud Computing', 'Data Science', 'Cybersecurity', 'Artificial Intelligence', 'Software Engineering', 'Internet of Things'];
 
-        foreach ($categoryNames as $category) {
+
+        foreach ($categories as $category) {
             Category::create([
                 'name' => $category,
             ]);

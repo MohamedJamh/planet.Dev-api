@@ -17,7 +17,7 @@ class ArticleFactory extends Factory
     public function definition()
     {
         return [
-            'title' => fake()->sentence(6),
+            'title' => fake()->realTextBetween(50, 150),
             'body' => fake()->randomHtml(),
         ];
     }

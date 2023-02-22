@@ -30,30 +30,29 @@ class UserSeeder extends Seeder
 
     public function run()
     {
-        $numUsers = 10;
-        $numAdmins = 3;
-        $userRoleId = 3;
+        $NUMUSERS = 10;
+        $NUMADMINS = 3;
+        $MAXNUMTAGS = 6;
         $categoryIds = Category::pluck('id')->toArray();
         $tagsIds = Tag::pluck('id')->toArray();
-        $maxNumTags = 6;
 
-        User::factory($numAdmins)
+        User::factory($NUMADMINS) // create users with admin role
                 ->create()
                 ->each(function($admin) {
-                    $admin->roles()->attach(2);
+                    $admin->roles()->attach([2, 3]);
                 });
 
-        $users = User::factory($numUsers)->create();
-        $userIds = User::pluck('id')->toArray(); //TODO: filter only users
-        $users->each(function ($user) use ($userRoleId, $categoryIds, $tagsIds, $maxNumTags, $userIds) {
-            $user->roles()->attach([$userRoleId]); // give it user role
+        $users = User::factory($NUMUSERS)->create(); // create users
+        $userIds = User::pluck('id')->toArray(); //TODO: filter only users?
+        $users->each(function ($user) use ($categoryIds, $tagsIds, $MAXNUMTAGS, $userIds) {
+            $user->roles()->attach([3]); // give it user role
             $numArticles = rand(0, 10);
             $catId = $categoryIds[array_rand($categoryIds)];
             Article::factory($numArticles)
                     ->create(['category_id' => $catId, 'user_id' => $user->id])
-                    ->each(function ($article) use ($tagsIds, $maxNumTags, $userIds) {
+                    ->each(function ($article) use ($tagsIds, $MAXNUMTAGS, $userIds) {
                         $numComments = rand(0, 20);
-                        $tags = $this->randomElements($tagsIds, $maxNumTags);
+                        $tags = $this->randomElements($tagsIds, $MAXNUMTAGS);
                         $article->tags()->attach($tags);
                         Comment::factory($numComments)
                                 ->create(['article_id' => $article->id, 'user_id' => 1])
