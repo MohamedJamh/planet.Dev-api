@@ -1,0 +1,16 @@
+@prefix = http://planet.dev-api.test/api
+
+GET {{prefix}}/comments/12
+###
+POST {{prefix}}/comments
+Content-Type: application/json
+
+{
+    "user_id":2,
+    "article_id":2,
+    "content":"Hello sir"
+}
+
+###
+
+DELETE {{prefix}}/comments/15
