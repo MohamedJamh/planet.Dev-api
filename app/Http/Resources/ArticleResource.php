@@ -20,6 +20,7 @@ class ArticleResource extends JsonResource
             'body' => $this->body,
             'userId' => $this->user_id,
             'categoryId' => $this->category_id,
+            'category' =>$this->category
         ];
     }
 }
