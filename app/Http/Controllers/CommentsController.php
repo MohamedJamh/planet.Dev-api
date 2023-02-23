@@ -19,10 +19,6 @@ class CommentsController extends Controller
     public function index(): CommentCollection
     {
         return $comments = new CommentCollection(Comment::paginate(20));
-        // return response()->json([
-        //     'status' => 'success',
-        //     'comments' => $comments
-        // ]);
     }
 
     /**
@@ -31,14 +27,14 @@ class CommentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCommentRequest $request)
+    public function store(StoreCommentRequest $request): \Illuminate\Http\JsonResponse
     {
         //
-        $comment = Comment::create($request->all())->only('id','user_id','article_id','content');
+        $comment = Comment::create($request->all());
         return response()->json([
             "status" => true,
             "message" => "Comment submited succefully",
-            "data" => $comment
+            "data" => new CommentResource($comment)
         ],201);
     }
 
@@ -50,12 +46,9 @@ class CommentsController extends Controller
      */
     public function show($comment): \Illuminate\Http\JsonResponse
     {
-        $comment = Comment::findOrFail($comment);
+        $comment = Comment::find($comment);
         if(!$comment){
-            return response()->json([
-                "status" => "failed",
-                "message" => "Comment not found"
-            ],404);
+            return $this->abort();
         }
         return response()->json(new CommentResource($comment),200);
     }
@@ -67,9 +60,19 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCommentRequest $request, $id)
+    public function update(UpdateCommentRequest $request , $comment): \Illuminate\Http\JsonResponse
     {
         //
+        $comment = Comment::find($comment);
+        if(!$comment){
+            return $this->abort();
+        }
+        $comment->update($request->only('content'));
+        return response()->json([
+            "status" => "succes",
+            "message" => "Comment updated succefully",
+            "comment" => new CommentResource($comment)
+        ],200);
     }
 
     /**
@@ -78,13 +81,22 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
+    public function destroy($comment): \Illuminate\Http\JsonResponse
     {
-        //
+        $comment = Comment::find($comment);
+        if(!$comment){
+            return $this->abort();
+        }
         $comment->delete();
         return response()->json([
             "status" => true,
             "message" => "Comment deleted succefully"
         ],200);
+    }
+    private function abort(): \Illuminate\Http\JsonResponse{
+        return response()->json([
+            "status" => "failed",
+            "message" => "Comment not found"
+        ],404);
     }
 }
