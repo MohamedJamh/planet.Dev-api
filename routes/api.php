@@ -6,6 +6,7 @@ use App\Http\Controllers\TestController;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+Route::apiResource('categories', CategoryController::class);
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -30,7 +32,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('refresh', 'refresh');
 
 });
-
 
 Route::apiResource('comments',CommentsController::class);
 Route::controller(TestController::class)->middleware('auth:api')->group(function () {
