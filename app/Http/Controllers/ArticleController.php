@@ -2,18 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Filters\ArticleFilter;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\ArticleCollection;
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return new ArticleCollection(Article::with('category', 'tags', 'comments')->get());
+        $filter = new ArticleFilter();
+        $queryItems = $filter->transform($request);
+        if(count($queryItems) == 0 && $request->has('tag') == false) {
+            return new ArticleCollection(Article::with('category', 'tags', 'comments')->get());
+        }
+        if($request->has('tag')) {
+            $tag = $request->tag;
+            return new ArticleCollection(Article::with('category', 'tags', 'comments')->where($queryItems)->whereHas('tags', function($query) use ($tag) {
+                $query->where('name', $tag);
+            })->get());
+        }
+        return new ArticleCollection(Article::with('category', 'tags', 'comments')->where($queryItems)->get());
     }
 
     public function show(Article $article)
@@ -35,7 +47,7 @@ class ArticleController extends Controller
     public function update(UpdateArticleRequest $request, Article $article)
     {
         $article->update($request->all());
-        $request->tags ? $article->tags()->sync($request->tags): null;
+        $request->tags ? $article->tags()->sync($request->tags) : null;
         return response()->json([
             "status" => true,
             "message" => "Article has been updated successfully!",
