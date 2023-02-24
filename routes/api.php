@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TestController;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -34,7 +35,6 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::apiResource('comments',CommentsController::class);
-Route::controller(TestController::class)->middleware('auth:api')->group(function () {
-    Route::get('home', 'index');
-});
+
+Route::apiResource('tags', TagController::class);
 
