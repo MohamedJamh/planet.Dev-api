@@ -42,4 +42,14 @@ class ArticleController extends Controller
             "article" => new ArticleResource($article)
         ]);
     }
+
+    public function destroy(Article $article)
+    {
+        $article->tags()->detach();
+        $article->delete();
+        return response()->json([
+            "status" => true,
+            "message" => "Article has been deleted successfully!"
+        ]);
+    }
 }
