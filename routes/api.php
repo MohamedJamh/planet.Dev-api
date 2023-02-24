@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TestController;
 use App\Models\Role;
@@ -41,4 +42,8 @@ Route::apiResource('comments',CommentsController::class);
 
 
 Route::apiResource('tags', TagController::class);
+
+Route::get('profile',[ProfileController::class,'index']);
+Route::patch('profile/details',[ProfileController::class,'updateDetails']);
+Route::patch('profile/password',[ProfileController::class,'updatePassword']);
 
