@@ -66,12 +66,6 @@ class User extends Authenticatable Implements JWTSubject
         return [];
      }
 
-    // public function hasRole($role)
-    // {
-    //     return $this->role == $role;
-    // }
-
-
     public function roles()
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
@@ -87,7 +81,24 @@ class User extends Authenticatable Implements JWTSubject
         return $this->hasMany(Article::class);
     }
 
-    public function isAdmin(){
+
+    public function isAdmin()
+    {
         return $this->roles()->where('name', 'admin')->exists();
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->roles()->where('name', 'superadmin')->exists();
+    }
+
+    public function isUser()
+    {
+        return $this->roles()->where('name', 'user')->exists();
+    }
+
+    public function hasRole($role)
+    {
+        return $this->roles()->where('name', $role)->exists();
     }
 }
