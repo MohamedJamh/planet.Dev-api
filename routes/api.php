@@ -9,6 +9,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,3 +41,4 @@ Route::apiResource('comments',CommentsController::class);
 
 Route::apiResource('tags', TagController::class);
 
+Route::apiResource('users', UserController::class);
