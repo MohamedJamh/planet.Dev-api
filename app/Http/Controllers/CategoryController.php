@@ -6,7 +6,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -27,6 +27,12 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
+        if (Gate::denies('modifie-categories'))
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'you dont have access',
+            ], 403);
+
         if (Category::where('name', $request->name)->exists())
             return response()->json([
                 'status' => 'fail',
@@ -61,6 +67,12 @@ class CategoryController extends Controller
 
     public function update(StoreCategoryRequest $request, $id)
     {
+        if (Gate::denies('modifie-categories'))
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'you dont have access',
+            ], 403);
+
         $category = Category::find($id);
 
         if (!$category)
@@ -80,6 +92,12 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
+        if (Gate::denies('modifie-categories'))
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'you dont have access',
+            ], 403);
+
         $category = Category::find($id);
 
         if (!$category)
