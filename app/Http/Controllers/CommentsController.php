@@ -33,7 +33,7 @@ class CommentsController extends Controller
     public function store(StoreCommentRequest $request): \Illuminate\Http\JsonResponse
     {
         //
-        $comment = Comment::create($request->all());
+        $comment = Comment::create($request->all() + ['user_id' => auth()->user()->id]);
         return response()->json([
             "status" => true,
             "message" => "Comment submited succefully",
@@ -70,6 +70,11 @@ class CommentsController extends Controller
         if(!$comment){
             return $this->abort();
         }
+        else if(auth()->user()->id != $comment->user_id){
+            return response()->json([
+                "message" => "you are not allowed to updated this comment"
+            ]);
+        }
         $comment->update($request->only('content'));
         return response()->json([
             "status" => "succes",
@@ -86,15 +91,23 @@ class CommentsController extends Controller
      */
     public function destroy($comment): \Illuminate\Http\JsonResponse
     {
+        $hasAdminRole = auth()->user()->roles()->where('name','admin')->exists();
         $comment = Comment::find($comment);
         if(!$comment){
             return $this->abort();
+        }else if(auth()->user()->id == $comment->user_id || $hasAdminRole == true){
+
+            $comment->delete();
+            return response()->json([
+                "status" => true,
+                "message" => "Comment deleted succefully"
+            ],200);
+
         }
-        $comment->delete();
+
         return response()->json([
-            "status" => true,
-            "message" => "Comment deleted succefully"
-        ],200);
+            "message" => "you are not allowed to delete this comment"
+        ]);
     }
     private function abort(): \Illuminate\Http\JsonResponse{
         return response()->json([
