@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TagController;
@@ -34,6 +35,7 @@ Route::controller(AuthController::class)->group(function () {
 
 });
 
+Route::apiResource('articles', ArticleController::class);
 Route::apiResource('comments',CommentsController::class);
 
 Route::apiResource('tags', TagController::class);
