@@ -7,10 +7,8 @@ use App\Http\Requests;
 class ArticleFilter extends ApiFilter
 {
     protected $safeParams = [
-        'title' => ['eq'],
-        'body' => ['eq'],
         'userId' => ['eq'],
-        'categoryId' => ['eq'],
+        'categoryId' => ['eq']
     ];
 
     protected $columnMap = [

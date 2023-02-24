@@ -16,8 +16,14 @@ class ArticleController extends Controller
     {
         $filter = new ArticleFilter();
         $queryItems = $filter->transform($request);
-        if(count($queryItems) == 0) {
+        if(count($queryItems) == 0 && $request->has('tag') == false) {
             return new ArticleCollection(Article::with('category', 'tags', 'comments')->get());
+        }
+        if($request->has('tag')) {
+            $tag = $request->tag;
+            return new ArticleCollection(Article::with('category', 'tags', 'comments')->where($queryItems)->whereHas('tags', function($query) use ($tag) {
+                $query->where('name', $tag);
+            })->get());
         }
         return new ArticleCollection(Article::with('category', 'tags', 'comments')->where($queryItems)->get());
     }
