@@ -66,6 +66,11 @@ class User extends Authenticatable Implements JWTSubject
         return [];
      }
 
+    // public function hasRole($role)
+    // {
+    //     return $this->role == $role;
+    // }
+
 
     public function roles()
     {
@@ -80,5 +85,9 @@ class User extends Authenticatable Implements JWTSubject
     public function articles()
     {
         return $this->hasMany(Article::class);
+    }
+
+    public function isAdmin(){
+        return $this->roles()->where('name', 'admin')->exists();
     }
 }

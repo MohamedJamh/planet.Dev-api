@@ -35,5 +35,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::apiResource('comments',CommentsController::class);
 
+
+
 Route::apiResource('tags', TagController::class);
 
