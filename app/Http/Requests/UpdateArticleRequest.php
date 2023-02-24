@@ -23,19 +23,27 @@ class UpdateArticleRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'title' => ['required'],
-            'body' => ['required'],
-            'userId' => ['required'],
-            'categoryId' => ['required'],
-        ];
+        $method = $this->method();
+        if ($method === 'PUT') {
+            return [
+                'title' => ['required'],
+                'body' => ['required'],
+                'userId' => ['required'],
+                'categoryId' => ['required'],
+            ];
+        } else {
+            return [
+                'title' => ['sometimes', 'required'],
+                'body' => ['sometimes', 'required'],
+                'userId' => ['sometimes', 'required'],
+                'categoryId' => ['sometimes', 'required'],
+            ];
+        }
     }
 
     protected function prepareForValidation()
     {
-        $this->merge([
-            'user_id' => $this->userId,
-            'category_id' => $this->categoryId
-        ]);
+        $this->userId ? $this->merge(['user_id' => $this->userId]) : null;
+        $this->categoryId ? $this->merge(['category_id' => $this->categoryId]) : null;
     }
 }

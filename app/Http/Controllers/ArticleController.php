@@ -32,8 +32,14 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function update(UpdateArticleRequest $request)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
-
+        $article->update($request->all());
+        $article->tags()->sync($request->tags);
+        return response()->json([
+            "status" => true,
+            "message" => "Article has been updated successfully!",
+            "article" => new ArticleResource($article)
+        ]);
     }
 }
