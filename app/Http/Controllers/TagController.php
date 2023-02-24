@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTagRequest;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use App\Http\Resources\TagResource;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\StoreTagRequest;
 
 class TagController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:api');
+
     }
 
     public function index()
     {
-        $tags = Tag::select('id', 'name')->orderBy('id')->get();
+        $tags = Tag::orderBy('id')->get();
 
         return response()->json([
             'status' => 'success',
-            'tags' => $tags,
+            'tags' => TagResource::collection($tags)
         ]);
     }
 
@@ -32,11 +35,18 @@ class TagController extends Controller
 
      public function store(StoreTagRequest $request)
      {
+        if (Gate::denies('update-tag')){
+            return response()->json([
+                'status' => "failed",
+                'message' => "You are not authorized to create a tag",
+            ], 401);
+        }
+
         $tag = Tag::create($request->all());
 
         return response()->json([
             'status' => true,
-            'message' => "The tag has been updated successfully",
+            'message' => "The tag has been created successfully",
             'tag' => $tag,
         ], 201);
      }
@@ -50,7 +60,7 @@ class TagController extends Controller
 
      public function show($tag)
      {
-        $tag = Tag::find($tag)->all('id', 'name');
+        $tag = Tag::find($tag);
 
         if(!$tag){
             return response()->json([
@@ -58,7 +68,7 @@ class TagController extends Controller
             ], 404);
         }
 
-        return response()->json($tag, 200);
+        return new TagResource($tag);
      }
 
      /**
@@ -71,6 +81,13 @@ class TagController extends Controller
 
      public function update(StoreTagRequest $request, $tag)
      {
+        if (Gate::denies('update-tag')){
+            return response()->json([
+                'status' => "failed",
+                'message' => "You are not authorized to update this tag",
+            ], 401);
+        }
+
         $tag = Tag::find($tag);
         if(!$tag) {
              return response()->json([
@@ -95,6 +112,12 @@ class TagController extends Controller
 
      public function destroy($tag)
      {
+        if (Gate::denies('destroy-tag')){
+            return response()->json([
+                'status' => "failed",
+                'message' => "You are not authorized to destroy this tag",
+            ], 401);
+        }
         $tag = Tag::find($tag);
          
         if (!$tag){
