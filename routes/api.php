@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\AuthController;
@@ -47,3 +48,5 @@ Route::get('profile',[ProfileController::class,'index']);
 Route::patch('profile/details',[ProfileController::class,'updateDetails']);
 Route::patch('profile/password',[ProfileController::class,'updatePassword']);
 
+Route::post('reset-password',[AccountController::class,'requestPassword']);
+Route::post('reset-password',[AccountController::class,'resetPassword'])->name('password.reset');
