@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +34,32 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        if (! auth()->user()->isAdmin())
+            return response()->json([
+                'statuss' => 'fail',
+                'message' => 'you dont have permission',
+            ], 403);
+
+        $user = User::create($request->only(['first_name', 'last_name', 'email', 'password']));
+
+        $roles = [3];
+        if ($request->role === 'admin') $roles = [2, 3];
+        else if ($request->role === 'superadmin') $roles = [1, 2, 3];
+
+        $user->roles()->attach($roles);
+
+        if ($user)
+            return response()->json([
+                'status' => 'success',
+                'user' => $user,
+            ]);
+        
+        return response()->json([
+            'status' => 'fail',
+            'message' => 'failed creating user',
+        ]);
     }
 
     /**
@@ -56,18 +85,6 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -83,11 +100,15 @@ class UserController extends Controller
                 'message' => 'user not found',
             ], 404);
         
-        $user->delete();
+        if ($user->delete())
+            return response()->json([
+                'status' => 'success',
+                'message' => 'user deleted with success',
+            ]);
         
         return response()->json([
-            'status' => 'success',
-            'message' => 'user deleted with success',
-        ]);
+            'status' => 'fail',
+            'message' => 'delte failed',
+        ], 503);
     }
 }
