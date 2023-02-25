@@ -48,5 +48,5 @@ Route::get('profile',[ProfileController::class,'index']);
 Route::patch('profile/details',[ProfileController::class,'updateDetails']);
 Route::patch('profile/password',[ProfileController::class,'updatePassword']);
 
-Route::post('reset-password',[AccountController::class,'requestPassword']);
+Route::post('request-password',[AccountController::class,'requestPassword']);
 Route::post('reset-password',[AccountController::class,'resetPassword'])->name('password.reset');
