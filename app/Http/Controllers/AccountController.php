@@ -11,4 +11,7 @@ class AccountController extends Controller
     public function requestPassword(Request $request){
 
     }
+    public function resetPassword(Request $request){
+        
+    }
 }
