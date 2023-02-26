@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
 
 class AccountController extends Controller
 {
@@ -34,5 +36,18 @@ class AccountController extends Controller
             }
         );
         return response()->json(["message" => __($status)]);
+    }
+    public function verificationVerify(EmailVerificationRequest $request){
+        $request->fulfill();
+        return response()->json([
+            "message" => "Your email has been verified"
+        ]);
+    }
+    public function verificationSent(Request $request){
+        $request->user()->sendEmailVerificationNotification();
+ 
+        return response()->json([
+            'message', 'Verification link sent!'
+        ]);
     }
 }
