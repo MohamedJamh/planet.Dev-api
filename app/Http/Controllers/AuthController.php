@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -12,6 +13,8 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware(['verified']);
+
     }
 
     public function login(Request $request)
@@ -57,7 +60,11 @@ class AuthController extends Controller
         ]);
 
         $role = User::find(3);
-        $user->roles()->attach($role);  
+        $user->roles()->attach($role);
+        
+        //Added by jamh, this events sends a verifcation email to the new user
+        event(new Registered($user));
+        //
 
 
         $token = Auth::login($user);

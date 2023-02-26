@@ -12,6 +12,10 @@ use App\Http\Requests\UpdateArticleRequest;
 
 class ArticleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['verified']);
+    }
     public function index(Request $request)
     {
         $filter = new ArticleFilter();
