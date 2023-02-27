@@ -15,7 +15,7 @@ class AccountController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['guest']);
+        
     }
     public function requestPassword(Request $request){
         $request->validate(["email" => ["required","email"]]);
