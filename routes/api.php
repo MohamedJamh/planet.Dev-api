@@ -11,6 +11,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,3 +56,4 @@ Route::post('reset-password',[AccountController::class,'resetPassword'])->name('
 Route::get('/email/verify/{id}/{hash}',[AccountController::class,'verificationVerify'])->middleware(['auth', 'signed'])->name('verification.verify');
  
 Route::post('/email/verification-notification',[AccountController::class,'verificationSent'])->middleware(['auth', 'throttle:6,1']);
+Route::apiResource('users', UserController::class);
