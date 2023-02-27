@@ -56,10 +56,3 @@ Route::post('reset-password',[AccountController::class,'resetPassword'])->name('
 Route::get('/email/verify/{id}/{hash}',[AccountController::class,'verificationVerify'])->middleware(['auth', 'signed'])->name('verification.verify');
  
 Route::post('/email/verification-notification',[AccountController::class,'verificationSent'])->middleware(['auth', 'throttle:6,1']);
-Route::get('/debug',function(){
-    $user = Auth::user();
-    if($user->hasVerifiedEmail()){
-        return "yes";
-    }
-    return "no";
-});
