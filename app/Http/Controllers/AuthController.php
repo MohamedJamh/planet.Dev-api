@@ -60,9 +60,7 @@ class AuthController extends Controller
         $role = User::find(3);
         $user->roles()->attach($role);
         
-        //Added by jamh, this events sends a verifcation email to the new user
         event(new Registered($user));
-        //
 
 
         $token = Auth::login($user);
