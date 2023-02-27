@@ -18,8 +18,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
+        if (Gate::denies('access-users'))
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'you dont have access',
+            ], 403);
+
         $users = User::all();
 
         return response()->json([
@@ -45,8 +51,8 @@ class UserController extends Controller
         $user = User::create($request->only(['first_name', 'last_name', 'email', 'password']));
 
         $roles = [3];
-        if ($request->role === 'admin') $roles = [2, 3];
-        else if ($request->role === 'superadmin') $roles = [1, 2, 3];
+        if ($request->role === 'admin' && auth()->user()->isSuperAdmin() ) $roles = [2, 3];
+        else if ($request->role === 'superadmin' && auth()->user()->isSuperAdmin() ) $roles = [1, 2, 3];
 
         $user->roles()->attach($roles);
 

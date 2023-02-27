@@ -32,5 +32,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('update-tag', fn(User $user) => $user->isAdmin());
         Gate::define('destroy-tag', fn(User $user) => $user->isAdmin());
         Gate::define('modifie-categories', fn(User $user) => $user->isAdmin());
+        Gate::define('access-users', fn(User $user) => $user->isAdmin());
+        Gate::define('modify-role-users', fn(User $user) => $user->isSuperAdmin());
+
     }
 }
